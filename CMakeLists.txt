@@ -3,4 +3,4 @@ project(mois_rings_fields)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(mois_rings_fields main.cpp)
+add_executable(mois_rings_fields main.cpp Fields.cpp Task1.cpp)
