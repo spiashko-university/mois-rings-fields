@@ -48,7 +48,7 @@ public:
             int x = field[i];
             for (int j = 0; j < field.size(); j++) {
                 x = (x * field[i]) % field.size();
-                if (primitive.Any(s = > s == x)) break;
+                if (any_of(primitive.begin(), primitive.end(), [&x](int i) { return i == x; })) break;
                 primitive.push_back(x);
             }
             if (primitive.size() == field.size() - 1) {

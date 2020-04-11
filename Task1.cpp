@@ -1,7 +1,6 @@
 #include <algorithm>
-#include<iostream>
-#include<vector>
-#include<vector>
+#include <iostream>
+#include <vector>
 #include <unordered_set>
 
 using namespace std;
@@ -155,15 +154,15 @@ public:
 
         vector<int> elem;
         for (int i = 0; i < ring.size(); ++i) {
-            list<int> subgr;
+            vector<int> subgr;
             int tmp = 0;
             do {
                 tmp = (tmp + ring[i]) % ring.size();
                 subgr.push_back(tmp);
             } while (tmp != 0);
-            subgr.sort();
+            sort(subgr.begin(), subgr.end());
             if (!CheckIdeals(subgr) && subgr.size() != 1 && subgr.size() != ring.size()) {
-                ideals.insert(ideals.end(), subgr.begin(), subgr.end());
+                ideals.push_back(subgr);
                 elem.push_back(ring[i]);
             }
         }
@@ -183,7 +182,7 @@ public:
         }
     }
 
-    bool CheckIdeals(list<int> subGr) {
+    bool CheckIdeals(vector<int> subGr) {
         for (int i = 0; i < ideals.size(); i++) {
             int k = 0;
             for (int j = 0; j < ideals[i].size(); j++) {
@@ -206,7 +205,15 @@ public:
                 if (i == j) {
                     continue;
                 }
-                if (ideals[j].size() > ideals[i].size() && ideals[i].All(s = > ideals[j].Any(x = > x == s))) {
+
+                vector<int> idealsj = ideals[j];
+
+                if (ideals[j].size() > ideals[i].size() &&
+                    all_of(ideals[i].begin(), ideals[i].end(),
+                           [&idealsj](int idealsix) {
+                               return any_of(idealsj.begin(), idealsj.end(),
+                                             [&idealsix](int idealsjx) { return idealsix == idealsjx; });
+                           })) {
                     flag = false;
                 }
             }
@@ -226,16 +233,16 @@ public:
         factorRings.push_back(ideals[num]);
         cout << "Классы вычетов: " << endl;
         for (int i = 1; i < ring.size(); i++) {
-            list<int> fRing;
+            vector<int> fRing;
             for (int j = 0; j < ideals[num].size(); j++) {
                 fRing.push_back((ideals[num][j] + ring[i]) % ring.size());
             }
-            fRing.sort();
+            sort(fRing.begin(), fRing.end());
 
-            if (factorRings.Any(s = > s.SequenceEqual(fRing))) {
+            if (any_of(factorRings.begin(), factorRings.end(), [&fRing](vector<int> s) { return s == fRing; })) {
                 continue;
             }
-            factorRings.insert(factorRings.end(), fRing.begin(), fRing.end());
+            factorRings.push_back(fRing);
         }
         for (int i = 0; i < factorRings.size(); i++) {
             cout << "[" << i << "] = { ";
